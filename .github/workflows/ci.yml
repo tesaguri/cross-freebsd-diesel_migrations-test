@@ -1,0 +1,29 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-unknown-freebsd
+          profile: minimal
+      - uses: Swatinem/rust-cache@v1
+      - name: Install `cross`
+        if: matrix.use_cross
+        uses: actions-rs/install@v0.1
+        with:
+          crate: cross
+          use-tool-cache: true
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --verbose --lib --target x86_64-unknown-freebsd
+          use-cross: true

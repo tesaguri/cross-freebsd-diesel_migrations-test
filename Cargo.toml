@@ -1,0 +1,10 @@
+[package]
+name = "cross-freebsd-diesel_migrations-test"
+version = "0.0.0"
+authors = ["Daiki Mizukami <tesaguriguma@gmail.com>"]
+edition = "2018"
+publish = false
+
+[dependencies]
+diesel = { version = "1", features = ["sqlite"] }
+diesel_migrations = { version = "1", features = ["sqlite"] }
