@@ -9,7 +9,6 @@ jobs:
     strategy:
       matrix:
         config:
-          - original
           - modified
     continue-on-error: true
     steps:
