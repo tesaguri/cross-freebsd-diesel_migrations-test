@@ -1,4 +1,5 @@
-The code under this directory (`docker`) is taken from [rust-embedded/cross].
+The code under this directory (`docker`) is originally taken from
+[rust-embedded/cross].
 
 Copyright (c) 2016 Jorge Aparicio
 
