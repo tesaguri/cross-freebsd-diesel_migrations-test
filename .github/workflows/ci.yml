@@ -6,6 +6,12 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        config:
+          - original
+          - modified
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v2
       - name: Install Rust toolchain
@@ -15,6 +21,8 @@ jobs:
           target: x86_64-unknown-freebsd
           profile: minimal
       - uses: Swatinem/rust-cache@v1
+      - name: Setup `Cross.toml`
+        run: mv Cross.${{ matrix.config }}.toml Cross.toml
       - name: Install `cross`
         if: matrix.use_cross
         uses: actions-rs/install@v0.1
