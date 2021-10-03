@@ -6,7 +6,8 @@ set -euo pipefail
 main() {
     local arch="${1}"
 
-    local sqlite_ver=3.34.0,1 \
+    local sqlite_ver=3.35.5_3,1 \
+          openssl_ver=1.1.1l,1 \
           target="${arch}-unknown-freebsd12"
 
     local td
@@ -26,13 +27,20 @@ main() {
             ;;
     esac
 
+    # Adding openssl lib
+    curl --retry 3 -sSfL "https://pkg.freebsd.org/FreeBSD:12:${bsd_arch}/quarterly/All/openssl-${openssl_ver}.txz" -O
+    tar -C "${td}/openssl" -xJf openssl-${openssl_ver}.txz /usr/local/lib /usr/local/include/
+
     # Adding sqlite3
     curl --retry 3 -sSfL "https://pkg.freebsd.org/FreeBSD:12:${bsd_arch}/quarterly/All/sqlite3-${sqlite_ver}.txz" -O
     tar -C "${td}/sqlite" -xJf sqlite3-${sqlite_ver}.txz /usr/local/lib
 
     # Copy the linked library
     local destdir="/usr/local/${target}"
-    cp "${td}/sqlite/usr/local/lib/libsqlite3.a" "${destdir}/lib"
+    cp -r "${td}/openssl/usr/local/include" "${destdir}"
+    cp "${td}/openssl/usr/local/lib"/lib{crypto,ssl}.a "${destdir}/lib"
+    cp "${td}/openssl/usr/local/lib"/lib{crypto,ssl}.so.11 "${destdir}/lib"
+    cp "${td}/openssl/usr/local/lib"/lib{crypto,ssl}.so "${destdir}/lib"
     cp "${td}/sqlite/usr/local/lib/libsqlite3.so.0.8.6" "${destdir}/lib"
     cp "${td}/sqlite/usr/local/lib/libsqlite3.so" "${destdir}/lib"
     cp "${td}/sqlite/usr/local/lib/libsqlite3.so.0" "${destdir}/lib"
